@@ -140,7 +140,7 @@ def scan():						# Function to conduct nmap scans
 	statics.filename = "/var/log/watcher/" + statics.scanname + "/" + statics.scanname + "-" + str(statics.day)
 	statics.prevfile = "/var/log/watcher/" + statics.scanname + "/" + statics.scanname + "-" + "prev.gnmap"
 	if statics.udp is "0":
-		command = "nmap " + "-sS -PN -n --randomize-hosts --max-retries " + statics.retries + " --max-rate " + statics.maxrate + " --min-rate " + statics.minrate + " -iL " + statics.hostsfile + " -oA " + statics.filename + " >> /var/log/watcher/" + statics.scanname + "/cron.log"
+		command = "nmap -v 6 " + "-sS -PN -n --randomize-hosts --max-retries " + statics.retries + " --max-rate " + statics.maxrate + " --min-rate " + statics.minrate + " -iL " + statics.hostsfile + " -oA " + statics.filename + " >> /var/log/watcher/" + statics.scanname + "/cron.log"
 	if statics.udp is "1":
 		command = "nmap " + "-sU -sS -PN -n --randomize-hosts --max-retries " + statics.retries + " --max-rate " + statics.maxrate + " --min-rate " + statics.minrate + " -iL " + statics.hostsfile + " -oA " + statics.filename + " >> /var/log/watcher/" + statics.scanname + "/cron.log"
 	os.chdir("/var/log/watcher/" + statics.scanname + "/")
@@ -519,7 +519,7 @@ def graph():						# Function to generate graphs
 	
 	# Output port change graph
 	
-	filename = "/var/log/watcher/" + statics.scanname + "/" + "ports.jpg"		
+	filename = "/var/log/watcher/" + statics.scanname + "/" + "ports.png"		
 	x = range(len(statics.graphopen))
 	fig = plt.figure()
 	ax = plt.subplot(111)
@@ -530,12 +530,12 @@ def graph():						# Function to generate graphs
 	plt.xlabel('Scans')
 	te = str(statics.scanname + " Ports")
 	plt.title(te)
-	plt.savefig(filename, format='jpg', dpi=100)
+	plt.savefig(filename, format='png', dpi=100)
 	plt.close
 
 	# Output host change graph
 
-	filename = "/var/log/watcher/" + statics.scanname + "/" + "hosts.jpg"
+	filename = "/var/log/watcher/" + statics.scanname + "/" + "hosts.png"
 	plt.cla()
 	x = range(len(statics.graphlivenew))
 	fig = plt.figure()
@@ -547,7 +547,7 @@ def graph():						# Function to generate graphs
 	plt.xlabel('Scans')
 	te = str(statics.scanname + " Hosts")
 	plt.title(te)
-	plt.savefig(filename, format='jpg', dpi=100)
+	plt.savefig(filename, format='png', dpi=100)
 	plt.close
 
 	return
@@ -556,7 +556,7 @@ def mail():							# Function to send output
 	
 	if statics.change == 0:
 		print "Change!.. Mail Sent"
-		comm = 'mutt -e "set content_type=text/html" -s ' + '"' + "PortWatcher - " + statics.scanname + " Change" + '" ' + statics.recipients + " -a /var/log/watcher/" + statics.scanname + "/ports.jpg" + " -a /var/log/watcher/" + statics.scanname + "/hosts.jpg " + "-a /var/log/watcher/" + statics.scanname + "/ips.txt " + "-- < " + statics.difffilename
+		comm = 'mutt -e "set content_type=text/html" -s ' + '"' + "PortWatcher - " + statics.scanname + " Change" + '" ' + statics.recipients + " -a /var/log/watcher/" + statics.scanname + "/ports.png" + " -a /var/log/watcher/" + statics.scanname + "/hosts.png " + "-a /var/log/watcher/" + statics.scanname + "/ips.txt " + "-- < " + statics.difffilename
 		os.system(comm)
 	else:
 		print "No change.."
